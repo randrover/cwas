@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Upload Python Package
+name: CWAS CI
 
 on:
   release:
@@ -22,14 +22,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python
+    - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
-        python-version: '3.x'
+        python-version: 3.9
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install build
+    - name: Lint with flake8
+      run: |
+        conda install flake8
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 cwas --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings.
+        flake8 cwas --count --exit-zero --max-line-length=80 --statistics --extend-ignore=E203
+    - name: Test with pytest
+      run: |
+        conda install pytest
+        pytest tests
     - name: Build package
       run: python -m build
     - name: Publish package
