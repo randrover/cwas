@@ -23,7 +23,8 @@ jobs:
       run: |
         conda update conda
         python -m pip install --upgrade pip
-        pip install build pyyaml
+        pip install build
+        pip install .
     - name: Lint with flake8
       run: |
         conda install flake8
